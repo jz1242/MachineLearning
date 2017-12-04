@@ -1,2 +1,2 @@
-#Machine Learning 601.475
-  Stuff I did in class.
+# Machine Learning 601.475
+  ## Stuff I did in class.
