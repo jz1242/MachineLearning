@@ -21,8 +21,13 @@ def forward(x, pi, A, B):
     Returns:
         alpha, a 2-D float NumPy array with shape [T, N_z].
     """
-    # TODO: Write this function.
-    raise NotImplementedError('Not yet implemented.')
+    t = x.shape[0]
+    n_z = pi.shape[0]
+    alpha = np.zeros((t, n_z))
+    alpha[0, :] = B[:, x[0]]*pi[:]
+    for i in range(1, t):
+        alpha[i, :] = B[:, x[i]] * (A[0, :]*alpha[i-1, 0] + A[1, :]*alpha[i-1, 1])
+    return alpha
 
 
 def backward(x, pi, A, B):
@@ -45,9 +50,13 @@ def backward(x, pi, A, B):
     Returns:
         beta, a 2-D float NumPy array with shape [T, N_z].
     """
-    # TODO: Write this function.
-    raise NotImplementedError('Not yet implemented.')
-
+    t = x.shape[0]
+    n_z = pi.shape[0]
+    beta = np.zeros((t, n_z))
+    beta[t-1, :] = 1
+    for i in range(t - 2, 0, -1):
+        beta[i, :] = (A[:, 0]*B[0, x[i + 1]]*beta[i+1,0]) + (A[:, 1]*B[1, x[i + 1]]*beta[i+1,1])
+    return beta
 
 def individually_most_likely_states(X, pi, A, B):
     """ Computes individually most-likely states.
@@ -78,7 +87,9 @@ def individually_most_likely_states(X, pi, A, B):
             is either 0, 1, 2, ..., N_z - 1.
     """
     # TODO: Write this function.
-    raise NotImplementedError('Not yet implemented.')
+    #forward(X[0], pi, A, B)
+    backward(X[0], pi, A, B)
+    pass
 
 
 def take_EM_step(X, pi, A, B):
