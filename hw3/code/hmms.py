@@ -87,9 +87,16 @@ def individually_most_likely_states(X, pi, A, B):
             is either 0, 1, 2, ..., N_z - 1.
     """
     # TODO: Write this function.
-    #forward(X[0], pi, A, B)
-    backward(X[0], pi, A, B)
-    pass
+    n = X.shape[0]
+    t = X.shape[1]
+    z = np.zeros((n, t), dtype=int)
+    for i in range(0, X.shape[0]):
+        alpha = forward(X[i], pi, A, B)
+        beta = backward(X[i], pi, A, B)
+        p_x = np.sum(alpha[t - 1])
+        p_zx = (1/p_x)*alpha*beta
+        z[i] = np.argmax(p_zx, axis=1)
+    return z
 
 
 def take_EM_step(X, pi, A, B):
@@ -115,5 +122,21 @@ def take_EM_step(X, pi, A, B):
         A_prime: A after the EM update.
         B_prime: B after the EM update.
     """
-    # TODO: Write this function.
-    raise NotImplementedError('Not yet implemented.')
+    n_z = pi.shape[0]
+    t = X.shape[1]
+    n_x = B.shape[1]
+    pi_prime = np.zeros(n_z)
+    A_prime = np.zeros((n_z, n_z))
+    B_prime = np.zeros((n_z, n_x))
+
+    for i in range(0, X.shape[0]):
+        alpha = forward(X[i], pi, A, B)
+        beta = backward(X[i], pi, A, B)
+        p_x = np.sum(alpha[t - 1])
+        pi_prime += (1/p_x)*alpha[0]*beta[0]
+        A_prime += (1/p_x)* (np.multiply(alpha[:-1, i], beta[1:, :]), B[j, x[1:]]))
+        #B_prime[i, j] += (np.dot(alpha[x == j, i], beta[x == j, i])) / p_x
+        print(A_prime)
+    return pi_prime, A_prime, B_prime
+
+    
