@@ -1,2 +1,2 @@
-# Machine Learning 601.475
+# Machine Learning 
   ## Stuff I did in class.
